@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+: "${RAILS_ENV?Need to set RAILS_ENV}"
+: "${APP_HOME?Need to set APP_HOME}"
+
+set +e
+bundle exec rake db:create
+
+set -e
+bundle exec rake db:migrate
+bundle exec puma -C "$APP_HOME/config/puma.rb"
