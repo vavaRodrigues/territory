@@ -1,6 +1,11 @@
-FROM ruby
+FROM ruby:alpine
 
-ENV APP_HOME=/usr/local/src 
+RUN apk add --no-cache build-base libxml2-dev libxslt-dev postgresql-dev git && \
+    bundle config build.nokogiri --use-system-libraries
+
+ENV APP_HOME=/usr/local/src \
+    RAILS_ENV=production \
+    RAILS_LOG_TO_STDOUT=true
 
 WORKDIR $APP_HOME
 
@@ -10,8 +15,6 @@ RUN bundle install
 
 COPY . $APP_HOME
 
-EXPOSE 3000
+EXPOSE 80
 
-ENTRYPOINT ["bundle", "exec"]
-
-CMD ["bundle", "exec", "rails", "server", "-p", "3000", "-b", "0.0.0.0"]
+CMD ["./bin/puma"]
